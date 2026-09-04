@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aufgabenplanner</title>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.4/dist/semantic.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.4/dist/semantic.min.js"></script>
+    <style>
+        body {
+            width: 100%;
+            height: 100%;
+        }
+
+        section {
+            margin-top: 2rem;
+        }
+
+        .title {
+            margin-bottom: 0;
+        }
+
+        .page {
+            max-width: 60vw;
+            margin: 2rem auto;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            height: 2.5rem;
+        }
+
+        .task-item>.task-description,
+        .task-item>.task-actions {
+            display: inline-flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        .task-item>.task-actions {
+            gap: 0.5rem;
+        }
+
+        .task-actions {
+            margin-left: auto;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="page">
+
+        <h1 class="title">TaMo Aufgabenplanner</h1>
+
+        <section class="ui action input tiny fluid">
+            <input id="taskname" type="text" placehdivder="Name" />
+            <button class="ui icon button">
+                <i class="plus icon"></i>
+            </button>
+        </section>
+
+        <section class="active">
+            <h2>Als Nächstes</h2>
+            <div class="ui middle aligned divided list">
+                <div class="item task-item">
+                    <div class="ui middle aligned checkbox task-description">
+                        <input id="input1" type="checkbox" />
+                        <label for="input1">
+                            Title of first task
+                        </label>
+                    </div>
+                    <div class="ui middle aligned content right floated task-actions">
+                        <span class="ui small grey text">31.08.2026</span>
+                        <button class="mini compact ui icon button"><i class="edit icon"></i></button>
+                        <button class="mini compact ui icon button"><i class="trash icon"></i></button>
+                    </div>
+                </div>
+                <div class="item task-item">
+                    <div class="ui middle aligned checkbox task-description">
+                        <input id="input2" type="checkbox" />
+                        <label for="input2">
+                            Title of second task
+                        </label>
+                    </div>
+                    <div class="ui middle aligned content right floated task-actions">
+                        <span class="ui small grey text">29.08.2026</span>
+                        <button class="mini compact ui icon button"><i class="edit icon"></i></button>
+                        <button class="mini compact ui icon button"><i class="trash icon"></i></button>
+                    </div>
+                </div>
+                <div class="item task-item">
+                    <div class="ui middle aligned checkbox task-description">
+                        <input id="input3" type="checkbox" />
+                        <label for="input3">
+                            Title of third task
+                        </label>
+                    </div>
+                    <div class="ui middle aligned content right floated task-actions">
+                        <span class="ui small grey text">29.08.2026</span>
+                        <button class="mini compact ui icon button"><i class="edit icon"></i></button>
+                        <button class="mini compact ui icon button"><i class="trash icon"></i></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="archive">
+            <h2>Im Archiv</h2>
+            <div class="ui middle aligned divided list">
+                <div class="item task-item">
+                    <div class="ui middle aligned checkbox task-description">
+                        <input id="archive1" type="checkbox" checked />
+                        <label for="archive1">
+                            <s><span class="ui grey text">Title of fourth task</span></s>
+                        </label>
+                    </div>
+                    <div class="ui middle aligned content right floated task-actions">
+                        <span class="ui small grey text">31.08.2026</span>
+                    </div>
+                </div>
+                <div class="item task-item">
+                    <div class="ui middle aligned checkbox task-description">
+                        <input id="archive2" type="checkbox" checked />
+                        <label for="archive2">
+                            <s><span class="ui grey text">Title of second task</span></s>
+                        </label>
+                    </div>
+                    <div class="ui middle aligned content right floated task-actions">
+                        <span class="ui small grey text">29.08.2026</span>
+                    </div>
+                </div>
+                <div class="item task-item">
+                    <div class="ui middle aligned checkbox task-description">
+                        <input id="archive3" type="checkbox" checked />
+                        <label for="archive3">
+                            <s><span class="ui grey text">Title of third task</span></s>
+                        </label>
+                    </div>
+                    <div class="ui middle aligned content right floated task-actions">
+                        <span class="ui small grey text">29.08.2026</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+    
+</body>
+
+</html>
