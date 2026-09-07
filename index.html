@@ -220,6 +220,11 @@
             reloadView();
         }
 
+        function removeTask(task) {
+            tasks = tasks.filter((item) => item !== task);
+            reloadView();
+        }
+
         function reloadView() {
             $(".list-tasks").empty();
             $(".list-done").empty();
@@ -232,7 +237,7 @@
 
                 var input = taskItem.find("#input-prototype");
                 input.attr("id", "input-" + task.index);
-                input.prop("checked", false);
+                input.prop("checked", task.doneAt !== null);
                 input.on("change", (e) => {
                     $("#dialog-done")
                         .modal({
@@ -241,9 +246,7 @@
                                 reloadView();
                             },
                             onDeny: () => {
-                                CancelEvent(e);
-                                input.prop("checked", false);
-                                return false;
+                                reloadView();
                             }
                         })
                         .modal("show");
@@ -280,8 +283,7 @@
                     $("#dialog-delete")
                         .modal({
                             onApprove: (e) => {
-                                // add remove logic
-                                reloadView();
+                                removeTask(task);
                             }
                         })
                         .modal("show");
@@ -300,7 +302,7 @@
 
                 var input = taskItem.find("#input-prototype");
                 input.attr("id", "input-" + task.index);
-                input.prop("checked", true);
+                input.prop("checked", task.doneAt !== null);
                 input.on("change", (e) => {
                     $("#dialog-undone")
                         .modal({
@@ -309,19 +311,17 @@
                                 reloadView();
                             },
                             onDeny: () => {
-                                CancelEvent(e);
-                                input.prop("checked", true);
-                                return false;
+                                reloadView();
                             }
                         })
                         .modal("show");
                 });
-
+                
                 var label = taskItem.find("#label-prototype");
                 label.attr("id", "label-" + task.index);
                 label.attr("for", "input-" + task.index);
                 label.children("span").text(task.title);
-                label.wrap("<s></s>");
+                label.css("text-decoration", "line-through");
                 
                 var date = taskItem.find("#date-prototype");
                 date.attr("id", "date-" + task.index);
@@ -329,7 +329,25 @@
 
                 taskItem.show();
                 $(".list-done").append(taskItem);
+
+                var buttonDelete = taskItem.find("#button-delete-prototype");
+                buttonDelete.attr("id", "button-delete-" + task.index);
+                buttonDelete.on("click", (e) => {
+                    $("#dialog-delete")
+                        .modal({
+                            onApprove: (e) => {
+                                removeTask(task);
+                            }
+                        })
+                        .modal("show");
+                });
             });
+
+            if ($(".list-tasks").children().length === 0)
+                $(".list-tasks").append("<p>Hier ist alles leer.</p>");
+
+            if ($(".list-done").children().length === 0)
+                $(".list-done").append("<p>Hier ist alles leer.</p>");
         }
 
         $(".button-add").on("click", (e) => {
