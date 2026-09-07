@@ -22,7 +22,7 @@
             margin-bottom: 0;
         }
 
-        .page {
+        .planner-page {
             max-width: 60vw;
             margin: 2rem auto;
         }
@@ -47,18 +47,26 @@
         .task-actions {
             margin-left: auto;
         }
+
+        .task-title {
+            width: 100%;
+            display: block;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
     </style>
 </head>
 
 <body>
 
-    <div class="page">
+    <div class="planner-page">
 
         <h1 class="title">TaMo Aufgabenplanner</h1>
 
         <section class="ui action input tiny fluid">
             <input id="taskname" type="text" placehdivder="Name" />
-            <button class="ui icon button">
+            <button class="button-add ui icon button">
                 <i class="plus icon"></i>
             </button>
         </section>
@@ -68,41 +76,41 @@
             <div class="ui middle aligned divided list">
                 <div class="item task-item">
                     <div class="ui middle aligned checkbox task-description">
-                        <input id="input1" type="checkbox" />
+                        <input id="input1" type="checkbox" class="check-done" />
                         <label for="input1">
                             Title of first task
                         </label>
                     </div>
                     <div class="ui middle aligned content right floated task-actions">
                         <span class="ui small grey text">31.08.2026</span>
-                        <button class="mini compact ui icon button"><i class="edit icon"></i></button>
-                        <button class="mini compact ui icon button"><i class="trash icon"></i></button>
+                        <button class="button-edit mini compact ui icon button"><i class="edit icon"></i></button>
+                        <button class="button-delete mini compact ui icon button"><i class="trash icon"></i></button>
                     </div>
                 </div>
                 <div class="item task-item">
                     <div class="ui middle aligned checkbox task-description">
-                        <input id="input2" type="checkbox" />
+                        <input id="input2" type="checkbox" class="check-done" />
                         <label for="input2">
                             Title of second task
                         </label>
                     </div>
                     <div class="ui middle aligned content right floated task-actions">
                         <span class="ui small grey text">29.08.2026</span>
-                        <button class="mini compact ui icon button"><i class="edit icon"></i></button>
-                        <button class="mini compact ui icon button"><i class="trash icon"></i></button>
+                        <button class="button-edit mini compact ui icon button"><i class="edit icon"></i></button>
+                        <button class="button-delete mini compact ui icon button"><i class="trash icon"></i></button>
                     </div>
                 </div>
                 <div class="item task-item">
                     <div class="ui middle aligned checkbox task-description">
-                        <input id="input3" type="checkbox" />
+                        <input id="input3" type="checkbox" class="check-done" />
                         <label for="input3">
                             Title of third task
                         </label>
                     </div>
                     <div class="ui middle aligned content right floated task-actions">
                         <span class="ui small grey text">29.08.2026</span>
-                        <button class="mini compact ui icon button"><i class="edit icon"></i></button>
-                        <button class="mini compact ui icon button"><i class="trash icon"></i></button>
+                        <button class="button-edit mini compact ui icon button"><i class="edit icon"></i></button>
+                        <button class="button-delete mini compact ui icon button"><i class="trash icon"></i></button>
                     </div>
                 </div>
             </div>
@@ -113,9 +121,9 @@
             <div class="ui middle aligned divided list">
                 <div class="item task-item">
                     <div class="ui middle aligned checkbox task-description">
-                        <input id="archive1" type="checkbox" checked />
+                        <input id="archive1" type="checkbox" checked class="check-undone" />
                         <label for="archive1">
-                            <s><span class="ui grey text">Title of fourth task</span></s>
+                            <s><span class="ui grey text single line task-title">Title of fourth task</span></s>
                         </label>
                     </div>
                     <div class="ui middle aligned content right floated task-actions">
@@ -124,9 +132,9 @@
                 </div>
                 <div class="item task-item">
                     <div class="ui middle aligned checkbox task-description">
-                        <input id="archive2" type="checkbox" checked />
+                        <input id="archive2" type="checkbox" checked class="check-undone" />
                         <label for="archive2">
-                            <s><span class="ui grey text">Title of second task</span></s>
+                            <s><span class="ui grey text single line task-title">Title of second task</span></s>
                         </label>
                     </div>
                     <div class="ui middle aligned content right floated task-actions">
@@ -135,9 +143,9 @@
                 </div>
                 <div class="item task-item">
                     <div class="ui middle aligned checkbox task-description">
-                        <input id="archive3" type="checkbox" checked />
+                        <input id="archive3" type="checkbox" checked class="check-undone" />
                         <label for="archive3">
-                            <s><span class="ui grey text">Title of third task</span></s>
+                            <s><span class="ui grey text single line task-title">Title of third task</span></s>
                         </label>
                     </div>
                     <div class="ui middle aligned content right floated task-actions">
@@ -146,9 +154,138 @@
                 </div>
             </div>
         </section>
-
     </div>
-    
+
+    <div id="dialog-add" class="ui tiny modal">
+        <div class="header">
+            Aufgabe erstellen
+        </div>
+        <div class="content">
+            <div class="description">
+                <div class="ui header">Möchtest du diese Aufgabe wirklich hinzufügen?</div>
+            </div>
+        </div>
+        <div class="actions">
+            <button class="ui black deny button">
+                Abbrechen
+            </button>
+            <button class="ui positive right labeled icon button">
+                Hinzufügen
+                <i class="edit icon"></i>
+            </button>
+        </div>
+    </div>
+
+    <div id="dialog-edit" class="ui tiny modal">
+        <div class="header">
+            Aufgabe bearbeiten
+        </div>
+        <div class="content">
+            <div class="description">
+                <div class="ui header">Bitte gib das neue Titel der Aufgabe ein:</div>
+                <div class="ui action input tiny fluid">
+                    <input id="taskname" type="text" placehdivder="Name" />
+                </div>
+            </div>
+        </div>
+        <div class="actions">
+            <button class="ui black deny button">
+                Abbrechen
+            </button>
+            <button class="ui positive right labeled icon button">
+                Speichern
+                <i class="edit icon"></i>
+            </button>
+        </div>
+    </div>
+
+    <div id="dialog-delete" class="ui tiny modal">
+        <div class="header">
+            Aufgabe löschen
+        </div>
+        <div class="content">
+            <div class="description">
+                <div class="ui header">Möchten Sie die Aufgabe wirklich löschen?</div>
+            </div>
+        </div>
+        <div class="actions">
+            <button class="ui black deny button">
+                Abbrechen
+            </button>
+            <button class="ui approve red right labeled icon button">
+                Ja, löschen
+                <i class="trash icon"></i>
+            </button>
+        </div>
+    </div>
+
+    <div id="dialog-done" class="ui tiny modal">
+        <div class="header">
+            Aufgabe erledigen
+        </div>
+        <div class="content">
+            <div class="description">
+                <div class="ui header">Möchten Sie die Aufgabe als erledigt markieren?</div>
+            </div>
+        </div>
+        <div class="actions">
+            <button class="ui black deny button">
+                Nein
+            </button>
+            <button class="ui positive right labeled icon button">
+                Ja
+                <i class="checkmark icon"></i>
+            </button>
+        </div>
+    </div>
+
+    <div id="dialog-undone" class="ui tiny modal">
+        <div class="header">
+            Aufgabe reaktivieren
+        </div>
+        <div class="content">
+            <div class="description">
+                <div class="ui header">Möchten Sie die Aufgabe wieder als unerledigt markieren?</div>
+            </div>
+        </div>
+        <div class="actions">
+            <button class="ui black deny button">
+                Nein
+            </button>
+            <button class="ui approve red right labeled icon button">
+                Ja
+                <i class="checkmark icon"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        $(".button-add").on("click", (e) => {
+            $("#dialog-add")
+                .modal("show");
+        });
+
+        $(".button-edit").on("click", (e) => {
+            $("#dialog-edit")
+                .modal("show");
+        });
+
+        $(".button-delete").on("click", (e) => {
+            $("#dialog-delete")
+                .modal("show");
+        });
+
+        $(".check-done").on("change", (e) => {
+            $("#dialog-done")
+                .modal("show");
+        });
+
+        $(".check-undone").on("change", (e) => {
+            $("#dialog-undone")
+                .modal("show");
+        });
+    </script>
+
 </body>
 
 </html>
