@@ -55,6 +55,10 @@
             white-space: nowrap;
             text-overflow: ellipsis;
         }
+
+        #task-item-prototype {
+            display: none;
+        }
     </style>
 </head>
 
@@ -73,85 +77,15 @@
 
         <section class="active">
             <h2>Als Nächstes</h2>
-            <div class="ui middle aligned divided list">
-                <div class="item task-item">
-                    <div class="ui middle aligned checkbox task-description">
-                        <input id="input1" type="checkbox" class="check-done" />
-                        <label for="input1">
-                            Title of first task
-                        </label>
-                    </div>
-                    <div class="ui middle aligned content right floated task-actions">
-                        <span class="ui small grey text">31.08.2026</span>
-                        <button class="button-edit mini compact ui icon button"><i class="edit icon"></i></button>
-                        <button class="button-delete mini compact ui icon button"><i class="trash icon"></i></button>
-                    </div>
-                </div>
-                <div class="item task-item">
-                    <div class="ui middle aligned checkbox task-description">
-                        <input id="input2" type="checkbox" class="check-done" />
-                        <label for="input2">
-                            Title of second task
-                        </label>
-                    </div>
-                    <div class="ui middle aligned content right floated task-actions">
-                        <span class="ui small grey text">29.08.2026</span>
-                        <button class="button-edit mini compact ui icon button"><i class="edit icon"></i></button>
-                        <button class="button-delete mini compact ui icon button"><i class="trash icon"></i></button>
-                    </div>
-                </div>
-                <div class="item task-item">
-                    <div class="ui middle aligned checkbox task-description">
-                        <input id="input3" type="checkbox" class="check-done" />
-                        <label for="input3">
-                            Title of third task
-                        </label>
-                    </div>
-                    <div class="ui middle aligned content right floated task-actions">
-                        <span class="ui small grey text">29.08.2026</span>
-                        <button class="button-edit mini compact ui icon button"><i class="edit icon"></i></button>
-                        <button class="button-delete mini compact ui icon button"><i class="trash icon"></i></button>
-                    </div>
-                </div>
+            <div class="list-tasks ui middle aligned divided list">
+                <p>Hier ist alles leer.</p>
             </div>
         </section>
 
         <section class="archive">
             <h2>Im Archiv</h2>
-            <div class="ui middle aligned divided list">
-                <div class="item task-item">
-                    <div class="ui middle aligned checkbox task-description">
-                        <input id="archive1" type="checkbox" checked class="check-undone" />
-                        <label for="archive1">
-                            <s><span class="ui grey text single line task-title">Title of fourth task</span></s>
-                        </label>
-                    </div>
-                    <div class="ui middle aligned content right floated task-actions">
-                        <span class="ui small grey text">31.08.2026</span>
-                    </div>
-                </div>
-                <div class="item task-item">
-                    <div class="ui middle aligned checkbox task-description">
-                        <input id="archive2" type="checkbox" checked class="check-undone" />
-                        <label for="archive2">
-                            <s><span class="ui grey text single line task-title">Title of second task</span></s>
-                        </label>
-                    </div>
-                    <div class="ui middle aligned content right floated task-actions">
-                        <span class="ui small grey text">29.08.2026</span>
-                    </div>
-                </div>
-                <div class="item task-item">
-                    <div class="ui middle aligned checkbox task-description">
-                        <input id="archive3" type="checkbox" checked class="check-undone" />
-                        <label for="archive3">
-                            <s><span class="ui grey text single line task-title">Title of third task</span></s>
-                        </label>
-                    </div>
-                    <div class="ui middle aligned content right floated task-actions">
-                        <span class="ui small grey text">29.08.2026</span>
-                    </div>
-                </div>
+            <div class="list-done ui middle aligned divided list">
+                <p>Hier ist alles leer.</p>
             </div>
         </section>
     </div>
@@ -184,7 +118,7 @@
             <div class="description">
                 <div class="ui header">Bitte gib das neue Titel der Aufgabe ein:</div>
                 <div class="ui action input tiny fluid">
-                    <input id="taskname" type="text" placehdivder="Name" />
+                    <input id="edit-taskname" type="text" placehdivder="Name" />
                 </div>
             </div>
         </div>
@@ -259,9 +193,155 @@
         </div>
     </div>
 
+    <div id="task-item-prototype" class="item task-item">
+        <div class="ui middle aligned checkbox task-description">
+            <input id="input-prototype" type="checkbox" class="check-done" />
+            <label id="label-prototype" for="input-prototype">
+                <span class="ui grey text single line task-title"></span>
+            </label>
+        </div>
+        <div class="ui middle aligned content right floated task-actions">
+            <span id="date-prototype" class="ui small grey text"></span>
+            <button id="button-edit-prototype" class="mini compact ui icon button"><i class="edit icon"></i></button>
+            <button id="button-delete-prototype" class="mini compact ui icon button"><i class="trash icon"></i></button>
+        </div>
+    </div>
+
     <script>
+        var tasks = [];
+
+        function addTask(title) {
+            tasks.push({
+                index: tasks.length,
+                title: title,
+                doneAt: null,
+                createdAt: new Date()
+            });
+            reloadView();
+        }
+
+        function reloadView() {
+            $(".list-tasks").empty();
+            $(".list-done").empty();
+            tasks.forEach((task) => {
+                if (task.doneAt != null)
+                    return;
+
+                var taskItem = $("#task-item-prototype").clone();
+                taskItem.attr("id", "task-item-" + task.index);
+
+                var input = taskItem.find("#input-prototype");
+                input.attr("id", "input-" + task.index);
+                input.prop("checked", false);
+                input.on("change", (e) => {
+                    $("#dialog-done")
+                        .modal({
+                            onApprove: () => {
+                                task.doneAt = new Date();
+                                reloadView();
+                            },
+                            onDeny: () => {
+                                CancelEvent(e);
+                                input.prop("checked", false);
+                                return false;
+                            }
+                        })
+                        .modal("show");
+                });
+
+                var label = taskItem.find("#label-prototype");
+                label.attr("id", "label-" + task.index);
+                label.attr("for", "input-" + task.index);
+                label.children("span").text(task.title);
+                
+                var date = taskItem.find("#date-prototype");
+                date.attr("id", "date-" + task.index);
+                date.text(task.createdAt.toLocaleDateString("de-DE"))
+
+                var buttonEdit = taskItem.find("#button-edit-prototype");
+                buttonEdit.attr("id", "button-edit-" + task.index);
+                buttonEdit.on("click", (e) => {
+                    var editModal = $("#dialog-edit");
+                    var editInput = editModal.find("#edit-taskname");
+                    editInput.val(task.title);
+                    editModal
+                        .modal({
+                            onApprove: (e) => {
+                                task.title = editInput.val();
+                                reloadView();
+                            }
+                        })
+                        .modal("show");
+                });
+
+                var buttonDelete = taskItem.find("#button-delete-prototype");
+                buttonDelete.attr("id", "button-delete-" + task.index);
+                buttonDelete.on("click", (e) => {
+                    $("#dialog-delete")
+                        .modal({
+                            onApprove: (e) => {
+                                // add remove logic
+                                reloadView();
+                            }
+                        })
+                        .modal("show");
+                });
+
+                taskItem.show();
+                $(".list-tasks").append(taskItem);
+            });
+
+            tasks.forEach((task) => {
+                if (task.doneAt == null)
+                    return;
+                
+                var taskItem = $("#task-item-prototype").clone();
+                taskItem.attr("id", "task-item-" + task.index);
+
+                var input = taskItem.find("#input-prototype");
+                input.attr("id", "input-" + task.index);
+                input.prop("checked", true);
+                input.on("change", (e) => {
+                    $("#dialog-undone")
+                        .modal({
+                            onApprove: () => {
+                                task.doneAt = null;
+                                reloadView();
+                            },
+                            onDeny: () => {
+                                CancelEvent(e);
+                                input.prop("checked", true);
+                                return false;
+                            }
+                        })
+                        .modal("show");
+                });
+
+                var label = taskItem.find("#label-prototype");
+                label.attr("id", "label-" + task.index);
+                label.attr("for", "input-" + task.index);
+                label.children("span").text(task.title);
+                label.wrap("<s></s>");
+                
+                var date = taskItem.find("#date-prototype");
+                date.attr("id", "date-" + task.index);
+                date.text(task.createdAt.toLocaleDateString("de-DE"))
+
+                taskItem.show();
+                $(".list-done").append(taskItem);
+            });
+        }
+
         $(".button-add").on("click", (e) => {
             $("#dialog-add")
+                .modal({
+                    onApprove: () => {
+                        console.log("dialog-add: onApprove");
+                        var tasknameInput = $("#taskname");
+                        addTask(tasknameInput.val())
+                        tasknameInput.val("");
+                    }
+                })
                 .modal("show");
         });
 
